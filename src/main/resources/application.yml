@@ -1,0 +1,13 @@
+server:
+    servlet-path: "/"
+    port: "9999"
+
+spring:
+    main:
+        banner-mode: "off"
+
+    mvc:
+        throw-exception-if-no-handler-found: true
+
+storage:
+    absolute-stored-path: "D://upload"
