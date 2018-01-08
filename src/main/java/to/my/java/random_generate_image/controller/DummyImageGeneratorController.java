@@ -5,9 +5,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 import to.my.java.random_generate_image.model.ImageContentType;
 import to.my.java.random_generate_image.model.ImageFileInfo;
 import to.my.java.random_generate_image.service.ImageService;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Base64;
 
 @Controller
 public class DummyImageGeneratorController {
@@ -19,7 +24,8 @@ public class DummyImageGeneratorController {
     }
 
     @GetMapping("/{dimension}")
-    public String generateDummyImage(@PathVariable("dimension") String dimension, Model model) {
+    @ResponseBody
+    public void generateDummyImage(@PathVariable("dimension") String dimension, HttpServletResponse response, Model model) throws IOException {
         dimension = dimension.trim();
 
         String base64Image = "";
@@ -37,8 +43,13 @@ public class DummyImageGeneratorController {
             base64Image = DummyImageService.getBase64Image(imageFileInfo);
         }
 
-        model.addAttribute("base64Image", base64Image);
+        response.setContentType("image/" + ImageContentType.PNG);
 
-        return "dummy-image-service";
+        if (base64Image.startsWith("data:")) {
+            base64Image = base64Image.split(",\\s")[1];
+        }
+
+        response.getOutputStream().write(Base64.getDecoder().decode(base64Image));
+        response.getOutputStream().flush();
     }
 }

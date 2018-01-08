@@ -1,6 +1,5 @@
 package to.my.java.random_generate_image.util;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Random;
 
 /**
@@ -102,7 +102,7 @@ public class DummyImageGenerator {
             ImageIO.write(image, imageFileExtension, byteArrayOutputStream);
             byteArrayOutputStream.flush();
 
-            return String.format(BASE64_IMAGE_FORMAT, imageFileExtension, Base64.encodeBase64String(byteArrayOutputStream.toByteArray()));
+            return String.format(BASE64_IMAGE_FORMAT, imageFileExtension, Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray()));
         } catch (IOException exception) {
             LOGGER.error("error", exception);
         }
